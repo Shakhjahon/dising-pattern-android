@@ -1,28 +1,58 @@
 package com.example.dising_pattern_android.factory
 
 
-                                    /**Pattern Factory**/
-interface FileParserFactory {
-    fun createFileParser(fileName: String): FileParserFactory
+/**Pattern Factory
+ *это порождающий паттерн проектирования, который определяет общий интерфейс для создания объектов
+ * в суперклассе, позволяя подклассам изменять тип создаваемых объектов.
+ *
+ * Задача: Создание CreatedCarModel
+ *
+ * Создайте фабрику для создания различных Марок Автомобилей.(например, Mers, Bmw, Audi, и т.д.)
+ * в зависимости от переданных параметров.
+ *
+ * Условия:
+ *
+ * - Фабрика должна иметь метод createdCarModel(type: String): CarModel, где type может быть "Mers" или "Bmw", или Audi, и т.д.
+ * - Фабрика должна возвращать соответствующий компонент в зависимости от переданного типа.
+ *
+ **/
+
+interface CreateCarModelFactory {
+    fun createCarModel(type: String): CarModel
 }
 
-class StandartFileParserFactory : FileParserFactory {
-    override fun createFileParser(fileName: String) =
-        when (fileName.substringAfterLast('.')) {
-            "xml" -> XmlFileParse()
-            "json" -> JsonFileParser()
-            else -> throw Exception("Неизвестный тип файла $fileName")
+
+class CreateCarModelFactoryImpl : CreateCarModelFactory {
+    override fun createCarModel(type: String): CarModel {
+        return when (type) {
+            "Mers" -> MersCar()
+            "Bmw" -> BmwCar()
+            else -> CarModel.Companion.Default()
         }
-}
-
-class XmlFileParse : FileParserFactory {
-    override fun createFileParser(fileName: String): FileParserFactory {
-        return XmlFileParse()
     }
 }
 
-class JsonFileParser : FileParserFactory {
-    override fun createFileParser(fileName: String): FileParserFactory {
-        return XmlFileParse()
+interface CarModel {
+    fun carModelTitle(): String
+
+    companion object {
+        class Default : CarModel {
+            override fun carModelTitle(): String {
+                return "Default Car"
+            }
+        }
+    }
+}
+
+class MersCar : CarModel {
+    override fun carModelTitle(): String {
+        return "Mers Car"
+    }
+}
+
+
+class BmwCar : CarModel {
+    override fun carModelTitle(): String {
+        return "Bmw Car"
     }
 }
